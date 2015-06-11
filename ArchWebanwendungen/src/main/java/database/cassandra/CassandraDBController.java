@@ -17,7 +17,7 @@ public class CassandraDBController implements DBController{
 	private Session session;
 
 	public CassandraDBController() {
-		cluster = Cluster.builder().addContactPoint("192.168.2.121").build();
+		cluster = Cluster.builder().addContactPoint("192.168.2.121").withPort(9042).build();
 		session = cluster.connect();
 		
 		final String createCql =

@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
@@ -14,10 +17,13 @@ import database.Log;
 
 public class ElasticDBController implements DBController{
 	
-	private TransportClient client;
+	private Client client;
 
 	public ElasticDBController() {
-		client = new TransportClient().addTransportAddress(new InetSocketTransportAddress("192.168.2.121", 9300));
+		Settings settings = ImmutableSettings.settingsBuilder()
+	            .put("cluster.name", "log_test")
+	            .build();
+		client = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress("192.168.2.121", 9300));
 	}
 
 	public void saveLog(Log log) {

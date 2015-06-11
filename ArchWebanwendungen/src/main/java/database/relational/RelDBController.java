@@ -8,6 +8,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import database.DBController;
 import database.Log;
 
@@ -21,8 +24,11 @@ public class RelDBController implements DBController{
 	}
 	
 	public void saveLog(Log log) {
-		database.relational.Log serLog = (database.relational.Log) log;
+		Transaction tx = ((Session) em.getDelegate()).getTransaction();
+		tx.begin();
+		database.relational.Log serLog = new database.relational.Log(log.getMessage(), log.getLevel(), log.getCreateDate());
 		em.persist(serLog);
+		tx.commit();
 	}
 
 	public List<Log> query(String query) {

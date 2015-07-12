@@ -1,0 +1,3 @@
+Sun Jul 12 11:32:04 CEST 2015 start writing 10 Logs zu Database 
+0; 202.0
+ingesamt: 912.0 durchschnitt: 0.22149122807017543

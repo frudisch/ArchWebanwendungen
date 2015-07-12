@@ -1,15 +1,23 @@
 package database.elasticsearch;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.get.GetField;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 import database.DBController;
@@ -48,8 +56,13 @@ public class ElasticDBController implements DBController{
 	}
 
 	public List<Log> query(String query) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Log> rc = new ArrayList<Log>();
+		// MatchAll on the whole cluster with all default options
+		SearchResponse response = client.prepareSearch().execute().actionGet();
+		for(SearchHit hit : response.getHits().getHits()){
+			rc.add(new Log("", "", new Date()));
+		}
+		return rc;
 	}
 
 	public boolean shutdown() {

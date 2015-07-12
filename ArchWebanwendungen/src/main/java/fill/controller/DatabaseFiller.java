@@ -50,6 +50,8 @@ public class DatabaseFiller implements Runnable{
 			
 			out.write("ingesamt: " + (endTime - startTime) + " durchschnitt: " + (counter/(endTime - startTime)));
 			System.out.println("fertig: " + controller.getClass().getName() + " ingesamt: " + (endTime - startTime) + " durchschnitt: " + (counter/(endTime - startTime)));
+			
+			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

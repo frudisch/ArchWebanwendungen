@@ -24,7 +24,7 @@ public class InfluxDBController implements DBController{
 		try{
 			influxDB.createDatabase(dbName);
 		}catch(Exception e){
-			System.out.println("kommt halt die exception");
+			System.out.println("influx: database already exists");
 		}
 	}
 
@@ -49,7 +49,7 @@ public class InfluxDBController implements DBController{
 		for (int i = 0; i < result.size(); i++) {
 			for (Map<String, Object> row : result.get(i).getRows()) {
 				Date date = new Date();
-				date.setTime((Long) row.get("time"));
+				date.setTime(((Double) row.get("time")).longValue());
 				rc.add(new Log(row.get("message").toString(), row.get("level").toString(), date));
 			}
 		}

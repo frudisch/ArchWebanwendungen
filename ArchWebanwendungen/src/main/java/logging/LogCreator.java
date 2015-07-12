@@ -9,6 +9,7 @@ import database.Log;
 public class LogCreator {
 	
 	private static final String[] errorLevel = {"note", "warning", "error"};
+	private static final String[] messages = {"Bad Request", "Unauthorized", "Forbidden", "Not Found", "Method Not Allowed", "Not Acceptable", "Proxy Authentication Required", "Request Timeout", "Conflict", "Gone", "Length Required", "Precondition Failed", "Request Entity Too Large", "Request-URI Too Long", "Unsupported Media Type", "Requested Range Not Satisfiable", "Expectation Failed"};
 
 	public LogCreator() {
 		
@@ -28,8 +29,9 @@ public class LogCreator {
 	}
 
 	private String getMessage() {
-		double msgLevel = Math.random();
-		return null;
+		double msg = Math.random()*16;
+		int msgSelection = (int) msg;
+		return messages[msgSelection];
 	}
 
 	private String getLevel() {

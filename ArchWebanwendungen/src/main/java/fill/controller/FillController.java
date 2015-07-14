@@ -12,7 +12,7 @@ import database.relational.RelDBController;
 
 public class FillController {
 	
-	public static final int testAmount = 10000;
+	public static final int testAmount = 1000000;
 
 	public FillController() {
 		
@@ -23,6 +23,12 @@ public class FillController {
 		DBController elasticsearch = new ElasticDBController();
 		DBController influx = new InfluxDBController();
 		DBController relation = new RelDBController();
+		
+		cassandra.clearContent();
+		elasticsearch.clearContent();
+		influx.clearContent();
+		relation.clearContent();
+		System.out.println("database truncated");
 		
 		List<Log> logs = new LogCreator().createAmountLogs(testAmount);
 		
@@ -41,12 +47,20 @@ public class FillController {
 		System.out.println("start joining threads");
 		try {
 			tCassandra.join();
+			cassandra.shutdown();
+			
 			tElasticSearch.join();
+			elasticsearch.shutdown();
+			
 			tInflux.join();
+			influx.shutdown();
+			
 			tRelation.join();
+			relation.shutdown();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		
 		System.out.println("Yeah alle fertig !");
 	}

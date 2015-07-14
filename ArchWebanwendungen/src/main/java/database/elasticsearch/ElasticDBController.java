@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -46,8 +48,6 @@ public class ElasticDBController implements DBController{
 			                  )
 			        .execute()
 			        .actionGet();
-			
-			System.out.println(response.getId());
 		} catch (ElasticsearchException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -57,6 +57,7 @@ public class ElasticDBController implements DBController{
 
 	public List<Log> query(String query) {
 		ArrayList<Log> rc = new ArrayList<Log>();
+		client.admin().indices().refresh(new RefreshRequest("log")).actionGet();
 		// MatchAll on the whole cluster with all default options
 		SearchResponse response = client.prepareSearch().execute().actionGet();
 		for(SearchHit hit : response.getHits().getHits()){
@@ -72,6 +73,10 @@ public class ElasticDBController implements DBController{
 		}catch (Exception e){
 			return false;
 		}
+	}
+
+	public void clearContent() {
+		client.delete(new DeleteRequest("log"));
 	}
 
 }

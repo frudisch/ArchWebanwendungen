@@ -11,13 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "log")
+@Table(name = "Log")
 public class Log extends database.Log implements Serializable{
 
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private long id;
+	
+	public Log() {
+		super("", "", new Date());
+	}
 	
 	public Log(String message, String level, Date createDate) {
 		super(message, level, createDate);

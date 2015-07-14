@@ -30,21 +30,32 @@ public class Controller {
 			System.out.println(log);
 		}*/
 		
+		String rationalQuery = "SELECT l FROM Log l";
+		System.out.println("Relational: " + relation.query(rationalQuery).size());
+		/*for(Log log : relation.query(rationalQuery)){
+			System.out.println(log);
+		}*/
+		
 		String influxQuery = "select time, level, message from log";
 		System.out.println("Influx: " + influx.query(influxQuery).size());
 		/*for(Log log : influx.query(influxQuery)){
 			System.out.println(log);
 		}*/
-		
-		String rationalQuery = "SELECT * FROM log";
-		System.out.println("Relational: " + relation.query(rationalQuery).size());
-		/*for(Log log : relation.query(rationalQuery)){
-			System.out.println(log);
-		}*/
 	}
 	
 	public static void main(String[] args) {
-		new Controller().selectAllSize();
+		Controller c = new Controller();
+		c.selectAllSize();
+		c.shutdown();
+	}
+
+	private void shutdown() {
+		cassandra.shutdown();
+		elasticsearch.shutdown();
+		influx.shutdown();
+		relation.shutdown();
+		
+		System.exit(0);
 	}
 
 }

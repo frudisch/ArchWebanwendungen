@@ -61,4 +61,12 @@ public class InfluxDBController implements DBController{
 		return false;
 	}
 
+	public void clearContent() {
+		String query = "DELETE FROM log";
+		this.influxDB.query(
+				dbName,
+				query ,
+				TimeUnit.MILLISECONDS);
+	}
+
 }

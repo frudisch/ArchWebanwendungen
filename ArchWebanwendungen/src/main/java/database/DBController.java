@@ -3,6 +3,8 @@ package database;
 import java.util.List;
 
 public interface DBController {
+	
+	public void clearContent();
 
 	public void saveLog (Log log);
 	

@@ -61,10 +61,17 @@ public class CassandraDBController implements DBController {
 	public boolean shutdown() {
 		try {
 			session.close();
+			cluster.close();
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public void clearContent() {
+		final String createCql = "TRUNCATE log_test.log";
+		
+		session.execute(createCql);
 	}
 
 }

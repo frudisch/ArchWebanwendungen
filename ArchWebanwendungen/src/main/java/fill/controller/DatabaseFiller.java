@@ -40,16 +40,19 @@ public class DatabaseFiller implements Runnable{
 				
 				double endTimeWriting = System.currentTimeMillis();
 				
+				counter += (endTimeWriting - startTimeWriting);
+				
 				if((i % 10000) == 0){
-					counter += (endTimeWriting - startTimeWriting);
-					out.write(i + "; " + (endTimeWriting - startTimeWriting) + "\n");
+					out.write(i + "; " + (endTimeWriting - startTime) + "; " + (10000/counter) + "\n");
+					out.flush();
+					counter = 0;
 					System.out.println(controller.getClass().getName() + " bei " + i);
 				}
 			}
 			double endTime = System.currentTimeMillis();
 			
-			out.write("ingesamt: " + (endTime - startTime) + " durchschnitt: " + (counter/(endTime - startTime)));
-			System.out.println("fertig: " + controller.getClass().getName() + " ingesamt: " + (endTime - startTime) + " durchschnitt: " + (counter/(endTime - startTime)));
+			out.write("ingesamt: " + (endTime - startTime) + " durchschnitt: " + (logs.size()/(endTime - startTime)));
+			System.out.println("fertig: " + controller.getClass().getName() + " ingesamt: " + (endTime - startTime) + " durchschnitt: " + (logs.size()/(endTime - startTime)));
 			
 			out.close();
 		} catch (Exception e) {

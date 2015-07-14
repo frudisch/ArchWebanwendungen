@@ -2,6 +2,7 @@ package logging;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import database.Log;
@@ -36,12 +37,19 @@ public class LogCreator {
 
 	private String getLevel() {
 		double rndLevel = Math.random();
-		if(rndLevel < 0.4){
+		if(rndLevel < 0.5){
 			return errorLevel[0];
 		}else if(rndLevel < 0.8){
 			return errorLevel[1];
 		}else {
 			return errorLevel[2];
+		}
+	}
+	
+	public static void main(String[] args) {
+		List<Log> logs = new LogCreator().createAmountLogs(100);
+		for (Log log : logs) {
+			System.out.println("Level: " + log.getLevel() + " ; message: " + log.getMessage() + " ; time: " + log.getCreateDate());
 		}
 	}
 }

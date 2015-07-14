@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
@@ -33,7 +34,7 @@ public class RelDBController implements DBController{
 
 	public List<Log> query(String query) {
 		List<Log> rc = new ArrayList<Log>();
-		TypedQuery<database.relational.Log> queryResult = em.createNamedQuery(query, database.relational.Log.class);
+		TypedQuery<database.relational.Log> queryResult = em.createQuery(query, database.relational.Log.class);
 		
 		for(Log log : queryResult.getResultList()){
 			rc.add((database.Log) log);
@@ -49,6 +50,10 @@ public class RelDBController implements DBController{
 		}catch (Exception e){
 			return false;
 		}
+	}
+
+	public void clearContent() {
+		
 	}
 
 }

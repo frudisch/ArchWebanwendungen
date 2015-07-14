@@ -42,8 +42,8 @@ public class DatabaseFiller implements Runnable{
 				
 				counter += (endTimeWriting - startTimeWriting);
 				
-				if((i % 10000) == 0){
-					out.write(i + "; " + (endTimeWriting - startTime) + "; " + (10000/counter) + "\n");
+				if((i % 50000) == 0){
+					out.write(i + "; " + (endTimeWriting - startTime) + "; " + (50000.0/counter) + "\n");
 					out.flush();
 					counter = 0;
 					System.out.println(controller.getClass().getName() + " bei " + i);

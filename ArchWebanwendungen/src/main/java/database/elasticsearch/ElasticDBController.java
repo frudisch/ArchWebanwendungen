@@ -8,7 +8,7 @@ import java.util.List;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -16,10 +16,9 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.get.GetField;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+
+import com.google.gson.Gson;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 import database.DBController;
@@ -38,7 +37,7 @@ public class ElasticDBController implements DBController{
 
 	public void saveLog(Log log) {
 		try {
-			IndexResponse response = client.prepareIndex("log_test", "log")
+			/*IndexResponse response = client.prepareIndex("log_test", "log")
 			        .setSource(jsonBuilder()
 			                    .startObject()
 			                        .field("level", log.getLevel())
@@ -47,20 +46,21 @@ public class ElasticDBController implements DBController{
 			                    .endObject()
 			                  )
 			        .execute()
-			        .actionGet();
+			        .actionGet();*/
+			IndexRequest indexRequest = new IndexRequest("twitter","tweet");
+			indexRequest.source(new Gson().toJson(log));
+			IndexResponse response = client.index(indexRequest).actionGet();
 		} catch (ElasticsearchException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public List<Log> query(String query) {
 		ArrayList<Log> rc = new ArrayList<Log>();
-		client.admin().indices().refresh(new RefreshRequest("log")).actionGet();
+		client.admin().indices().refresh(new RefreshRequest("log_test")).actionGet();
 		// MatchAll on the whole cluster with all default options
 		SearchResponse response = client.prepareSearch().execute().actionGet();
-		for(SearchHit hit : response.getHits().getHits()){
+		for(SearchHit hit : response.getHits()){
 			rc.add(new Log("", "", new Date()));
 		}
 		return rc;
@@ -76,7 +76,7 @@ public class ElasticDBController implements DBController{
 	}
 
 	public void clearContent() {
-		client.delete(new DeleteRequest("log"));
+		client.delete(new DeleteRequest("log_test"));
 	}
 
 }

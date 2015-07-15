@@ -12,19 +12,54 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Log")
-public class Log extends database.Log implements Serializable{
+public class Log implements Serializable{
 
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private long id;
 	
+	@Column(name = "message")
+	private String message;
+	
+	@Column(name = "level")
+	private String level;
+	
+	@Column(name = "createDate")
+	private Date createDate;
+
 	public Log() {
-		super("", "", new Date());
+		
 	}
 	
-	public Log(String message, String level, Date createDate) {
-		super(message, level, createDate);
+	public Log(String message, String level, Date createDate){
+		this.message = message;
+		this.level = level;
+		this.createDate = createDate;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 }

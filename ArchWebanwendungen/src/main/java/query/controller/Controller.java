@@ -1,6 +1,7 @@
 package query.controller;
 
 import database.DBController;
+import database.Log;
 import database.cassandra.CassandraDBController;
 import database.elasticsearch.ElasticDBController;
 import database.influx.InfluxDBController;
@@ -17,8 +18,8 @@ public class Controller {
 		
 	}
 	
-	public void selectAllSize(){
-		String cassandraQuery = "SELECT * FROM log_test.log";
+	public void performaceSelection(){
+		String cassandraQuery = "SELECT * FROM log_test.log where ";
 		System.out.println("Cassandra: " + cassandra.query(cassandraQuery).size());
 		/*for(Log log : cassandra.query(cassandraQuery)){
 			System.out.println(log);
@@ -30,7 +31,7 @@ public class Controller {
 			System.out.println(log);
 		}*/
 		
-		String rationalQuery = "SELECT l FROM Log l";
+		String rationalQuery = "SELECT l FROM Log l where l.message = '' and l.note = 'error' and l.createDate between now() and now()";
 		System.out.println("Relational: " + relation.query(rationalQuery).size());
 		/*for(Log log : relation.query(rationalQuery)){
 			System.out.println(log);
@@ -41,6 +42,36 @@ public class Controller {
 		/*for(Log log : influx.query(influxQuery)){
 			System.out.println(log);
 		}*/
+	}
+	
+	public void selectAllSize(){
+		String cassandraQuery = "SELECT * FROM log_test.log";
+		System.out.println("Cassandra: " + cassandra.query(cassandraQuery).size());
+		for(Log log : cassandra.query(cassandraQuery)){
+			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
+			break;
+		}
+		
+		String elasticsearchQuery = "SELECT * FROM log_test.log";
+		System.out.println("ElasticSearch: " + elasticsearch.query(elasticsearchQuery).size());
+		for(Log log : elasticsearch.query(elasticsearchQuery)){
+			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
+			break;
+		}
+		
+		String rationalQuery = "SELECT l FROM Log l";
+		System.out.println("Relational: " + relation.query(rationalQuery).size());
+		for(Log log : relation.query(rationalQuery)){
+			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
+			break;
+		}
+		
+		String influxQuery = "select time, level, message from log";
+		System.out.println("Influx: " + influx.query(influxQuery).size());
+		for(Log log : influx.query(influxQuery)){
+			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
+			break;
+		}
 	}
 	
 	public static void main(String[] args) {

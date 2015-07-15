@@ -36,8 +36,8 @@ public class RelDBController implements DBController{
 		List<Log> rc = new ArrayList<Log>();
 		TypedQuery<database.relational.Log> queryResult = em.createQuery(query, database.relational.Log.class);
 		
-		for(Log log : queryResult.getResultList()){
-			rc.add((database.Log) log);
+		for(database.relational.Log log : queryResult.getResultList()){
+			rc.add(new database.Log(log.getMessage(), log.getLevel(), log.getCreateDate()));
 		}
 		
 		return rc;

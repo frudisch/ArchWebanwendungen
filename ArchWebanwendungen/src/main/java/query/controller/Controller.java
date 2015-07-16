@@ -19,7 +19,7 @@ public class Controller {
 	}
 	
 	public void performaceSelection(){
-		String cassandraQuery = "SELECT * FROM log_test.log where ";
+		String cassandraQuery = "SELECT * FROM log_test.log where level = '' and message = '' and createDate <= '' and createDate >= ''";
 		System.out.println("Cassandra: " + cassandra.query(cassandraQuery).size());
 		/*for(Log log : cassandra.query(cassandraQuery)){
 			System.out.println(log);
@@ -76,7 +76,7 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		Controller c = new Controller();
-		c.selectAllSize();
+		c.performaceSelection();
 		c.shutdown();
 	}
 

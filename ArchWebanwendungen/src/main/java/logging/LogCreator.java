@@ -24,6 +24,12 @@ public class LogCreator {
 			String message = getMessage();
 			
 			rc.add(new Log(message, level, new Date()));
+			
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return rc;
@@ -47,7 +53,7 @@ public class LogCreator {
 	}
 	
 	public static void main(String[] args) {
-		List<Log> logs = new LogCreator().createAmountLogs(100);
+		List<Log> logs = new LogCreator().createAmountLogs(1000);
 		for (Log log : logs) {
 			System.out.println("Level: " + log.getLevel() + " ; message: " + log.getMessage() + " ; time: " + log.getCreateDate());
 		}

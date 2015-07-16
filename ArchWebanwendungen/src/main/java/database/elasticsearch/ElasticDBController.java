@@ -13,12 +13,16 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 
 import com.google.gson.Gson;
 
@@ -67,6 +71,35 @@ public class ElasticDBController implements DBController {
 
 	public List<Log> query(String query) {
 		ArrayList<Log> rc = new ArrayList<Log>();
+		
+		QueryBuilder qb = QueryBuilders.boolQuery()
+				.must(QueryBuilders.matchQuery(query.split(";")[0].split(":")[0], query.split(";")[0].split(":")[1]))
+				.must(QueryBuilders.matchQuery(query.split(";")[1].split(":")[0], query.split(";")[1].split(":")[1]))
+				.must(QueryBuilders.rangeQuery("createDate").to(query.split(";")[2].split(":")[1]).from(query.split(";")[3].split(":")[1]))
+				;
+		
+		SearchResponse response = client.prepareSearch("log_test")
+                .setTypes("log")
+                .setSearchType(SearchType.QUERY_AND_FETCH)
+                .setQuery(qb)   
+                .execute()
+                .actionGet();
+        SearchHits hits=response.getHits(); 
+        
+        for (SearchHit hit : hits) {
+        	String message = hit.field("message").getValue().toString();
+        	String level = hit.field("level").getValue().toString();
+        	Date date = null;
+			try {
+				date = new SimpleDateFormat().parse(hit.field("createDate").getValue().toString());
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			rc.add(new Log(message, level, date));
+		}
+		return rc;
+		/*
+		ArrayList<Log> rc = new ArrayList<Log>();
 		client.admin().indices().refresh(new RefreshRequest("log_test"))
 				.actionGet();
 		// MatchAll on the whole cluster with all default options
@@ -74,7 +107,7 @@ public class ElasticDBController implements DBController {
 		for (SearchHit hit : response.getHits()) {
 			rc.add(new Log("", "", new Date()));
 		}
-		return rc;
+		return rc;*/
 	}
 
 	public boolean shutdown() {

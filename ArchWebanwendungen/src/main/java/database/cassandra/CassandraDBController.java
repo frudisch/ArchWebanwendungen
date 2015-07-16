@@ -48,7 +48,7 @@ public class CassandraDBController implements DBController {
 
 	public List<Log> query(String query) {
 		List<database.Log> rc = new ArrayList<database.Log>();
-		final ResultSet results = session.execute(query);
+		ResultSet results = session.execute(query);
 
 		for (Row row : results) {
 			rc.add(new Log(row.getString("message"), row.getString("level"),

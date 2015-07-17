@@ -75,7 +75,7 @@ public class ElasticDBController implements DBController {
 		QueryBuilder qb = QueryBuilders.boolQuery()
 				.must(QueryBuilders.matchQuery(query.split(";")[0].split(":")[0], query.split(";")[0].split(":")[1]))
 				.must(QueryBuilders.matchQuery(query.split(";")[1].split(":")[0], query.split(";")[1].split(":")[1]))
-				.must(QueryBuilders.rangeQuery("createDate").to(query.split(";")[2].split(":")[1]).from(query.split(";")[3].split(":")[1]))
+				.must(QueryBuilders.rangeQuery("createDate").to(query.split(";")[3].split("/")[1]).from(query.split(";")[2].split("/")[1]))
 				;
 		
 		SearchResponse response = client.prepareSearch("log_test")
@@ -85,7 +85,7 @@ public class ElasticDBController implements DBController {
                 .execute()
                 .actionGet();
         SearchHits hits=response.getHits(); 
-        
+
         for (SearchHit hit : hits) {
         	String message = hit.field("message").getValue().toString();
         	String level = hit.field("level").getValue().toString();
@@ -98,8 +98,8 @@ public class ElasticDBController implements DBController {
 			rc.add(new Log(message, level, date));
 		}
 		return rc;
-		/*
-		ArrayList<Log> rc = new ArrayList<Log>();
+		
+		/*ArrayList<Log> rc = new ArrayList<Log>();
 		client.admin().indices().refresh(new RefreshRequest("log_test"))
 				.actionGet();
 		// MatchAll on the whole cluster with all default options

@@ -27,7 +27,7 @@ public class Controller {
 		double timeStart, timeEnd;
 		
 		// http://stackoverflow.com/questions/18697725/cassandra-get-all-records-in-time-range  and createDate <= '2015-07-16 11:23:10' and createDate >= '2015-07-16 11:23:00'
-		String cassandraQuery = "SELECT * FROM log_test.log where level = 'error' and message = 'Method not Allowed' and createDate <= '2015-07-16 11:23:10' and createDate >= '2015-07-16 11:23:00' ALLOW FILTERING";
+		String cassandraQuery = "SELECT * FROM log_test.log where level = 'error' and message = 'Gone' and createDate <= '2015-07-16 05:23:10-0400' and createDate >= '2015-07-16 05:23:00-0400' ALLOW FILTERING";
 		timeStart = System.currentTimeMillis();
 		List<Log> cassandraRC = cassandra.query(cassandraQuery);
 		timeEnd = System.currentTimeMillis();
@@ -38,7 +38,7 @@ public class Controller {
 		}
 		
 		// http://stackoverflow.com/questions/27243698/searching-multiple-strings-in-all-fields-in-elasticsearch-using-java-api
-		String elasticsearchQuery = "level:error;message:Method not Allowed;createDateFrom:2015-07-16T11:23:00;createDateTo:2015-07-16T11:23:10";
+		String elasticsearchQuery = "level:error;message:Gone;createDateFrom/2015-07-16T05:23:00;createDateTo/2015-07-16T05:23:10";
 		timeStart = System.currentTimeMillis();
 		List<Log> elasticSearchRC = elasticsearch.query(elasticsearchQuery);
 		timeEnd = System.currentTimeMillis();
@@ -48,7 +48,7 @@ public class Controller {
 			break;
 		}
 		
-		String rationalQuery = "SELECT l FROM Log l where l.message = 'Method not Allowed' and l.level = 'error' and l.createDate >= '2015-07-16 05:23:00' and l.createDate <= '2015-07-16 05:23:10'";
+		String rationalQuery = "SELECT l FROM Log l where l.message = 'Gone' and l.level = 'error' and l.createDate >= '2015-07-16 05:23:00' and l.createDate <= '2015-07-16 05:23:10'";
 		timeStart = System.currentTimeMillis();
 		List<Log> rationalRC = relation.query(rationalQuery);
 		timeEnd = System.currentTimeMillis();
@@ -59,42 +59,12 @@ public class Controller {
 		}
 		
 		// https://influxdb.com/docs/v0.9/query_language/querying_data.html
-		String influxQuery = "select time, level, message from log where level = 'error' and message = 'Method not Allowed' and time > '2015-07-16 11:23:00' and time < '2015-07-16 11:23:10'";
+		String influxQuery = "select time, level, message from log where level = 'error' and message = 'Gone' and time > '2015-07-16 05:23:00' and time < '2015-07-17' - 14h - 36m - 49s";
 		timeStart = System.currentTimeMillis();
 		List<Log> influxRC = influx.query(influxQuery);
 		timeEnd = System.currentTimeMillis();
 		System.out.println("Influx: " + influxRC.size() + " Zeit: " + (timeEnd - timeStart));
 		for(Log log : influxRC){
-			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
-			break;
-		}
-	}
-	
-	public void selectAllSize(){
-		String cassandraQuery = "SELECT * FROM log_test.log";
-		System.out.println("Cassandra: " + cassandra.query(cassandraQuery).size());
-		for(Log log : cassandra.query(cassandraQuery)){
-			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
-			break;
-		}
-		
-		String elasticsearchQuery = "SELECT * FROM log_test.log";
-		System.out.println("ElasticSearch: " + elasticsearch.query(elasticsearchQuery).size());
-		for(Log log : elasticsearch.query(elasticsearchQuery)){
-			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
-			break;
-		}
-		
-		String rationalQuery = "SELECT l FROM Log l";
-		System.out.println("Relational: " + relation.query(rationalQuery).size());
-		for(Log log : relation.query(rationalQuery)){
-			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
-			break;
-		}
-		
-		String influxQuery = "select time, level, message from log";
-		System.out.println("Influx: " + influx.query(influxQuery).size());
-		for(Log log : influx.query(influxQuery)){
 			System.out.println("level: " + log.getLevel() + " message: " + log.getMessage() + " date: " + log.getCreateDate());
 			break;
 		}
